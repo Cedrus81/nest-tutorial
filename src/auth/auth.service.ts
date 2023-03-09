@@ -1,13 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 // import { User, Bookmark } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { AuthDto } from './dto';
+import * as argon from 'argon2';
+// import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+// import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { Prisma } from '@prisma/client';
+
 @Injectable({})
 export class AuthService {
   constructor(private prisma: PrismaService) {}
-  signup() {
-    return { msg: 'i have signed up' };
+  async signup(dto: AuthDto) {
+    const hash = await argon.hash(dto.password);
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          email: dto.email,
+          hash,
+        },
+      });
+      delete user.hash;
+      return user;
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError) {
+        // 'P2002' is the specific case in prisma errors of a unique field repitition (i.e. "credentials already taken")
+        if (err.code === 'P2002') {
+          throw new ForbiddenException('These credentials are already taken');
+        }
+      }
+      //if prisma didn't catch the error just throw the error
+      throw err;
+    }
   }
-  signin() {
-    return { msg: 'I have signed in' };
+  async signin(dto: AuthDto) {
+    // find the user
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: dto.email,
+      },
+    });
+    // compare password
+    const pwMatches = await argon.verify(user.hash, dto.password);
+    // if user does not exist throw exception
+    // if password incorrect throw exception
+    if (!pwMatches || !user)
+      throw new ForbiddenException('Incorrect email or password');
+    // send back the user
+    delete user.hash;
+    return user;
   }
 }
