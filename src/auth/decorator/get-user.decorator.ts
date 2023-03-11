@@ -9,3 +9,11 @@ export const GetUser = createParamDecorator(
     return request.user;
   },
 );
+
+// example for extracting a specific field from the request:
+export const GetUserEmail = createParamDecorator(
+  (data: string | undefined, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    if (data) return request.user[data];
+  },
+);
