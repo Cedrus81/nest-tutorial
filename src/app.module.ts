@@ -7,7 +7,7 @@ import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({}), // enables in the .env module
+    ConfigModule.forRoot({ isGlobal: true }), // enables in the .env module
     AuthModule,
     PrismaModule,
     UserModule,
