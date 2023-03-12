@@ -36,7 +36,7 @@ model Bookmark {
     link String
 
     userId Int
-    user  User @relation(fields: [userId], references: [id])
+    user  User @relation(fields: [userId], references: [id], onDelete: Cascade) // onDelete Cascade deletes this bookmark when it's parent (a user) is deleted
     // this is how we declare relations
     // fields refers to the variable of bookmark we filter with, references compares it with the user's parallel field
 

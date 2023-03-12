@@ -14,4 +14,12 @@ export class PrismaService extends PrismaClient {
       },
     });
   }
+  cleanDB() {
+    // a transaction tells prisma to complete the actions one after the other
+    // this way there won't be bookmarks without users
+    return this.$transaction([
+      this.bookmark.deleteMany(),
+      this.user.deleteMany(),
+    ]);
+  }
 }
