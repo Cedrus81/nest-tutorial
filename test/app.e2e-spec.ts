@@ -5,6 +5,7 @@ import { AppModule } from '../src/app.module';
 import * as pactum from 'pactum';
 import { AuthDto } from '../src/auth/dto';
 import { EditUserDto } from 'src/user/dto';
+import { CreateBookmarkDto } from 'src/bookmark/dto';
 
 describe('app-e2e', () => {
   let app: INestApplication;
@@ -28,90 +29,306 @@ describe('app-e2e', () => {
   afterAll(() => {
     app.close();
   });
+  // describe('Auth', () => {
+  //   const dto: AuthDto = {
+  //     email: 'omri@gmail.com',
+  //     password: '12345',
+  //   };
+  //   describe('SignUp', () => {
+  //     it('should throw; email empty', () => {
+  //       return pactum
+  //         .spec()
+  //         .post('/auth/signup')
+  //         .withBody({ password: dto.password })
+  //         .expectStatus(400);
+  //     });
+
+  //     it('should throw; password empty', () => {
+  //       return pactum
+  //         .spec()
+  //         .post('/auth/signup')
+  //         .withBody({ email: dto.email })
+  //         .expectStatus(400);
+  //     });
+  //     it('should signup', () => {
+  //       return pactum
+  //         .spec()
+  //         .post('/auth/signup')
+  //         .withBody(dto)
+  //         .expectStatus(403);
+  //     });
+  //   });
+
+  //   describe('SignIn', () => {
+  //     it('should throw; email empty', () => {
+  //       return pactum
+  //         .spec()
+  //         .post('/auth/signin')
+  //         .withBody({ password: dto.password })
+  //         .expectStatus(400);
+  //     });
+
+  //     it('should throw; password empty', () => {
+  //       return pactum
+  //         .spec()
+  //         .post('/auth/signin')
+  //         .withBody({ email: dto.email })
+  //         .expectStatus(400);
+  //     });
+
+  //     it('should signin', () => {
+  //       return pactum
+  //         .spec()
+  //         .post('/auth/signin')
+  //         .withBody(dto)
+  //         .expectStatus(200)
+  //         .stores('userAt', 'access_token'); //stores the result data in with pactum for further tests
+  //     });
+  //   });
+  //   describe('User', () => {
+  //     it('should get current user', () => {
+  //       return pactum
+  //         .spec()
+  //         .get('/users/me')
+  //         .withHeaders({ Authorization: 'Bearer $S{userAt}' }) //example using a saved variable in pactum
+  //         .expectStatus(200);
+  //     });
+  //   });
+  //   describe('Edit user:', () => {
+  //     const dto: EditUserDto = {
+  //       firstName: 'vladimir',
+  //     };
+  //     it('should edit user', () => {
+  //       return pactum
+  //         .spec()
+  //         .patch('/users')
+  //         .withHeaders({ Authorization: 'Bearer $S{userAt}' }) //example using a saved variable in pactum
+  //         .withBody(dto)
+  //         .expectStatus(200)
+  //         .inspect(); //prints the result in yellow
+  //     });
+  //   });
+  // describe('Bookmark', () => {
+  // describe('Get empty bookmarks', () => {
+  //   it('get empty bookmarks', () => {
+  //     return pactum
+  //       .spec()
+  //       .get('/bookmarks')
+  //       .withHeaders({ Authorization: 'Bearer $S{userAt}' }) //example using a saved variable in pactum
+  //       .expectStatus(200)
+  //       .expectBody([]);
+  //   });
+  // });
+  // describe('Create Bookmark', () => {
+  //   const dto: CreateBookmarkDto = {
+  //     title: 'harry potter and something',
+  //     description: '500 points to griffindor',
+  //     link: 'avada kadavera',
+  //   };
+  //   it('Should create bookmark', () => {
+  //     return pactum
+  //       .spec()
+  //       .post('/bookmarks')
+  //       .withHeaders({ Authorization: 'Bearer $S{userAt}' })
+  //       .withBody(dto)
+  //       .expectStatus(201)
+  //       .inspect();
+  //   });
+  // });
+
+  // describe('Bookmarks', () => {
+  //   describe('Get empty bookmarks', () => {
+  //     it('should get bookmarks', () => {
+  //       return pactum
+  //         .spec()
+  //         .get('/bookmarks')
+  //         .withHeaders({
+  //           Authorization: 'Bearer $S{userAt}',
+  //         })
+  //         .expectStatus(200)
+  //         .expectBody([]);
+  //     });
+  //   });
+
+  //   describe('Create bookmark', () => {
+  //     const dto: CreateBookmarkDto = {
+  //       title: 'First Bookmark',
+  //       link: 'https://www.youtube.com/watch?v=d6WC5n9G_sM',
+  //     };
+  //     it('should create bookmark', () => {
+  //       return pactum
+  //         .spec()
+  //         .post('/bookmarks')
+  //         .withHeaders({
+  //           Authorization: 'Bearer $S{userAt}',
+  //         })
+  //         .withBody(dto)
+  //         .expectStatus(201);
+  //         // .stores('bookmarkId', 'id');
+  //     });
+  //   });
+
+  //   describe('Get bookmarks', () => {
+  //     it('should get bookmarks', () => {
+  //       return pactum
+  //         .spec()
+  //         .get('/bookmarks')
+  //         .withHeaders({
+  //           Authorization: 'Bearer $S{userAt}',
+  //         })
+  //         .expectStatus(200)
+  //         .expectJsonLength(1);
+  //     });
+  //   });
   describe('Auth', () => {
     const dto: AuthDto = {
-      email: 'omri@gmail.com',
-      password: '12345',
+      email: 'vlad@gmail.com',
+      password: '123',
     };
-    describe('SignUp', () => {
-      it('should throw; email empty', () => {
+    describe('Signup', () => {
+      it('should throw if email empty', () => {
         return pactum
           .spec()
           .post('/auth/signup')
-          .withBody({ password: dto.password })
+          .withBody({
+            password: dto.password,
+          })
           .expectStatus(400);
       });
-
-      it('should throw; password empty', () => {
+      it('should throw if password empty', () => {
         return pactum
           .spec()
           .post('/auth/signup')
-          .withBody({ email: dto.email })
+          .withBody({
+            email: dto.email,
+          })
           .expectStatus(400);
+      });
+      it('should throw if no body provided', () => {
+        return pactum.spec().post('/auth/signup').expectStatus(400);
       });
       it('should signup', () => {
         return pactum
           .spec()
           .post('/auth/signup')
           .withBody(dto)
-          .expectStatus(403);
+          .expectStatus(201);
       });
     });
 
-    describe('SignIn', () => {
-      it('should throw; email empty', () => {
+    describe('Signin', () => {
+      it('should throw if email empty', () => {
         return pactum
           .spec()
           .post('/auth/signin')
-          .withBody({ password: dto.password })
+          .withBody({
+            password: dto.password,
+          })
           .expectStatus(400);
       });
-
-      it('should throw; password empty', () => {
+      it('should throw if password empty', () => {
         return pactum
           .spec()
           .post('/auth/signin')
-          .withBody({ email: dto.email })
+          .withBody({
+            email: dto.email,
+          })
           .expectStatus(400);
       });
-
+      it('should throw if no body provided', () => {
+        return pactum.spec().post('/auth/signin').expectStatus(400);
+      });
       it('should signin', () => {
         return pactum
           .spec()
           .post('/auth/signin')
           .withBody(dto)
           .expectStatus(200)
-          .stores('userAt', 'access_token'); //stores the result data in with pactum for further tests
+          .stores('userAt', 'access_token');
       });
     });
-    describe('User', () => {
+  });
+
+  describe('User', () => {
+    describe('Get me', () => {
       it('should get current user', () => {
         return pactum
           .spec()
           .get('/users/me')
-          .withHeaders({ Authorization: 'Bearer $S{userAt}' }) //example using a saved variable in pactum
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
           .expectStatus(200);
       });
     });
-    describe('Edit user:', () => {
-      const dto: EditUserDto = {
-        firstName: 'vladimir',
-      };
+
+    describe('Edit user', () => {
       it('should edit user', () => {
+        const dto: EditUserDto = {
+          firstName: 'Vladimir',
+          email: 'vlad@codewithvlad.com',
+        };
         return pactum
           .spec()
           .patch('/users')
-          .withHeaders({ Authorization: 'Bearer $S{userAt}' }) //example using a saved variable in pactum
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
           .withBody(dto)
           .expectStatus(200)
-          .inspect(); //prints the result in yellow
+          .expectBodyContains(dto.firstName)
+          .expectBodyContains(dto.email);
       });
     });
-    describe('Bookmark', () => {
-      it.todo('get bookmarks');
-      it.todo('get bookmark by id');
-      it.todo('edit bookmark');
-      it.todo('delete bookmark');
+  });
+
+  describe('Bookmarks', () => {
+    describe('Get empty bookmarks', () => {
+      it('should get bookmarks', () => {
+        return pactum
+          .spec()
+          .get('/bookmarks')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .expectStatus(200)
+          .expectBody([]);
+      });
     });
+
+    describe('Create bookmark', () => {
+      const dto: CreateBookmarkDto = {
+        title: 'First Bookmark',
+        link: 'https://www.youtube.com/watch?v=d6WC5n9G_sM',
+      };
+      it('should create bookmark', () => {
+        return pactum
+          .spec()
+          .post('/bookmarks')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .withBody(dto)
+          .expectStatus(201);
+        // .stores('bookmarkId', 'id');
+      });
+    });
+
+    describe('Get bookmarks', () => {
+      it('should get bookmarks', () => {
+        return pactum
+          .spec()
+          .get('/bookmarks')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .expectStatus(200)
+          .expectJsonLength(1);
+      });
+    });
+    it.todo('get bookmark by id');
+    it.todo('get bookmark by id');
+    it.todo('edit bookmark');
+    it.todo('delete bookmark');
   });
 });
